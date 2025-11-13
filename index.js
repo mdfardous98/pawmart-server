@@ -1,13 +1,22 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware
-app.use(cors());
+// Middleware - 
+app.use(
+  cors({
+    origin: [
+      "https://pawmart-client.vercel.app", 
+      "http://localhost:5173", 
+    ],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 // MongoDB Connection URI
@@ -22,7 +31,7 @@ const client = new MongoClient(uri, {
   },
 });
 
-//  Connection Test
+// Connection Test
 async function run() {
   try {
     // await client.connect();
@@ -101,7 +110,7 @@ async function run() {
       try {
         const result = await listingsCollection
           .find()
-          .sort({ date: -1 })
+          .sort({ addedAt: -1 })
           .limit(6)
           .toArray();
         res.send(result);
@@ -165,7 +174,7 @@ async function run() {
     app.get("/orders/:email", async (req, res) => {
       try {
         const userEmail = req.params.email;
-        const query = { buyerEmail: userEmail };
+        const query = { email: userEmail };
         const result = await ordersCollection.find(query).toArray();
         res.send(result);
       } catch (error) {
