@@ -4,13 +4,13 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
-// Middleware - 
+// ========== MIDDLEWARE ==========
 app.use(
   cors({
     origin: [
-      "https://pawmart-client.vercel.app", 
+      "https://pawmart-client-2025.netlify.app", 
       "http://localhost:5173", 
     ],
     credentials: true,
@@ -19,10 +19,8 @@ app.use(
 
 app.use(express.json());
 
-// MongoDB Connection URI
+// ========== MONGODB CONNECTION ==========
 const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.ums636c.mongodb.net/pawmart-user?retryWrites=true&w=majority`;
-
-// Mongo Client Setup
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -31,24 +29,21 @@ const client = new MongoClient(uri, {
   },
 });
 
-// Connection Test
 async function run() {
   try {
-    // await client.connect();
+    await client.connect();
     console.log("Connected to MongoDB!");
 
     const database = client.db("pawmart-user");
     const listingsCollection = database.collection("listings");
     const ordersCollection = database.collection("orders");
 
-    // Test route
+    // ========== TEST ROUTE ==========
     app.get("/", (req, res) => {
       res.send("PawMart Server is running!");
     });
 
     // ========== LISTINGS ROUTES ==========
-
-    // Get all listings
     app.get("/listings", async (req, res) => {
       try {
         const result = await listingsCollection.find().toArray();
@@ -58,19 +53,18 @@ async function run() {
       }
     });
 
-    // Get listing by ID
     app.get("/listings/:id", async (req, res) => {
       try {
         const id = req.params.id;
-        const query = { _id: new ObjectId(id) };
-        const result = await listingsCollection.findOne(query);
+        const result = await listingsCollection.findOne({
+          _id: new ObjectId(id),
+        });
         res.send(result);
       } catch (error) {
         res.status(500).send({ error: "Failed to fetch listing" });
       }
     });
 
-    // Create new listing
     app.post("/listings", async (req, res) => {
       try {
         const listingData = req.body;
@@ -81,32 +75,28 @@ async function run() {
       }
     });
 
-    // Get listings by category
     app.get("/listings/category/:categoryName", async (req, res) => {
       try {
         const category = decodeURIComponent(req.params.categoryName);
-        const query = { category: category };
-        const result = await listingsCollection.find(query).toArray();
+        const result = await listingsCollection.find({ category }).toArray();
         res.send(result);
       } catch (error) {
-        console.error("Category fetch error:", error);
         res.status(500).send({ error: "Failed to fetch category listings" });
       }
     });
 
-    // Get user's listings
     app.get("/listings/user/:email", async (req, res) => {
       try {
         const userEmail = req.params.email;
-        const query = { email: userEmail };
-        const result = await listingsCollection.find(query).toArray();
+        const result = await listingsCollection
+          .find({ email: userEmail })
+          .toArray();
         res.send(result);
       } catch (error) {
         res.status(500).send({ error: "Failed to fetch user listings" });
       }
     });
 
-    // Get recent listings
     app.get("/recent-listings", async (req, res) => {
       try {
         const result = await listingsCollection
@@ -120,38 +110,38 @@ async function run() {
       }
     });
 
-    // Search listings by name
     app.get("/search", async (req, res) => {
       try {
         const searchText = req.query.search;
-        const query = { name: { $regex: searchText, $options: "i" } };
-        const result = await listingsCollection.find(query).toArray();
+        const result = await listingsCollection
+          .find({ name: { $regex: searchText, $options: "i" } })
+          .toArray();
         res.send(result);
       } catch (error) {
         res.status(500).send({ error: "Search failed" });
       }
     });
 
-    // Update listing
     app.put("/listings/:id", async (req, res) => {
       try {
         const id = req.params.id;
         const updatedData = req.body;
-        const query = { _id: new ObjectId(id) };
-        const update = { $set: updatedData };
-        const result = await listingsCollection.updateOne(query, update);
+        const result = await listingsCollection.updateOne(
+          { _id: new ObjectId(id) },
+          { $set: updatedData }
+        );
         res.send(result);
       } catch (error) {
         res.status(500).send({ error: "Failed to update listing" });
       }
     });
 
-    // Delete listing
     app.delete("/listings/:id", async (req, res) => {
       try {
         const id = req.params.id;
-        const query = { _id: new ObjectId(id) };
-        const result = await listingsCollection.deleteOne(query);
+        const result = await listingsCollection.deleteOne({
+          _id: new ObjectId(id),
+        });
         res.send(result);
       } catch (error) {
         res.status(500).send({ error: "Failed to delete listing" });
@@ -159,8 +149,6 @@ async function run() {
     });
 
     // ========== ORDERS ROUTES ==========
-
-    // Create order
     app.post("/orders", async (req, res) => {
       try {
         const orderData = req.body;
@@ -171,12 +159,12 @@ async function run() {
       }
     });
 
-    // Get user's orders
     app.get("/orders/:email", async (req, res) => {
       try {
         const userEmail = req.params.email;
-        const query = { email: userEmail };
-        const result = await ordersCollection.find(query).toArray();
+        const result = await ordersCollection
+          .find({ email: userEmail })
+          .toArray();
         res.send(result);
       } catch (error) {
         res.status(500).send({ error: "Failed to fetch orders" });
@@ -185,13 +173,13 @@ async function run() {
 
     console.log("All routes are set up successfully!");
   } catch (error) {
-    console.log("Database connection error:", error);
+    console.error("Database connection error:", error);
   }
 }
 
-run().catch(console.dir);
+run().catch(console.error);
 
-// Start server
+// ========== START SERVER ==========
 app.listen(port, () => {
   console.log(`PawMart server running on port ${port}`);
 });
