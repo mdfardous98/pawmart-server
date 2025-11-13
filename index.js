@@ -132,7 +132,31 @@ app.get("/recent-listings", async (req, res) => {
     });
 
 
+// Update listing
+    app.put("/listings/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const updatedData = req.body;
+        const query = { _id: new ObjectId(id) };
+        const update = { $set: updatedData };
+        const result = await listingsCollection.updateOne(query, update);
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to update listing" });
+      }
+    });
 
+    // Delete listing
+    app.delete("/listings/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await listingsCollection.deleteOne(query);
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to delete listing" });
+      }
+    });
 
 
 
