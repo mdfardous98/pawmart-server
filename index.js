@@ -84,11 +84,12 @@ async function run() {
     // Get listings by category
     app.get("/listings/category/:categoryName", async (req, res) => {
       try {
-        const category = req.params.categoryName;
+        const category = decodeURIComponent(req.params.categoryName);
         const query = { category: category };
         const result = await listingsCollection.find(query).toArray();
         res.send(result);
       } catch (error) {
+        console.error("Category fetch error:", error);
         res.status(500).send({ error: "Failed to fetch category listings" });
       }
     });
