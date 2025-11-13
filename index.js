@@ -159,7 +159,30 @@ app.get("/recent-listings", async (req, res) => {
     });
 
 
+// ========== ORDERS ROUTES ==========
 
+    // Create order
+    app.post("/orders", async (req, res) => {
+      try {
+        const orderData = req.body;
+        const result = await ordersCollection.insertOne(orderData);
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to create order" });
+      }
+    });
+
+    // Get user's orders
+    app.get("/orders/:email", async (req, res) => {
+      try {
+        const userEmail = req.params.email;
+        const query = { buyerEmail: userEmail };
+        const result = await ordersCollection.find(query).toArray();
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to fetch orders" });
+      }
+    });
 
 
 
