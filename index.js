@@ -37,7 +37,8 @@ async function run() {
 const database = client.db("pawmart-user");
 const listingsCollection = database.collection("listings");
 
-//
+const ordersCollection = database.collection("orders");
+
 
 // Test Route
 app.get("/", (req, res) => {
@@ -75,6 +76,45 @@ app.post("/listings", async (req, res) => {
         res.send(result);
     } catch (error) {
         res.status(500).send({ error: "Failed to create listing" });
+    }
+});
+
+
+// Get listings by category
+app.get("/listings/category/:categoryName", async (req, res) => {
+    try {
+        const category = req.params.categoryName;
+        const query = { category: category };
+        const result = await listingsCollection.find(query).toArray();
+        res.send(result);
+    } catch (error) {
+        res.status(500).send({ error: "Failed to fetch category listings" });
+    }
+});
+
+// Get user's listings
+app.get("/listings/user/:email", async (req, res) => {
+    try {
+        const userEmail = req.params.email;
+        const query = { email: userEmail };
+        const result = await listingsCollection.find(query).toArray();
+        res.send(result);
+    } catch (error) {
+        res.status(500).send({ error: "Failed to fetch user listings" });
+    }
+});
+
+// Get recent listings
+app.get("/recent-listings", async (req, res) => {
+    try {
+        const result = await listingsCollection
+            .find()
+            .sort({ date: -1 })
+            .limit(6)
+            .toArray();
+        res.send(result);
+    } catch (error) {
+        res.status(500).send({ error: "Failed to fetch recent listings" });
     }
 });
 
