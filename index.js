@@ -11,7 +11,8 @@ app.use(
   cors({
     origin: [
       "https://pawmart-client-2025.netlify.app", 
-      "http://localhost:5173", 
+      "http://localhost:5173",
+      "https://pawmart-server-olive.vercel.app",
     ],
     credentials: true,
   })

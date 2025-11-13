@@ -1,12 +1,12 @@
-#  PawMart - Server-
+# 🐾 PawMart – Server
 
 This repository contains the back-end API for the PawMart project. It is built with **Node.js**, **Express**, and **MongoDB**, and serves all data required by the PawMart client application.
 
-**Live Server URL:** []()
+**Live Server URL:** [https://pawmart-server-olive.vercel.app](https://pawmart-server-olive.vercel.app)
 
 ---
 
-##  Technologies Used
+## Technologies Used
 
 - **Node.js:** JavaScript runtime to run the server-side code.  
 - **Express.js:** Lightweight framework to create API endpoints and handle HTTP requests.  
@@ -14,10 +14,9 @@ This repository contains the back-end API for the PawMart project. It is built w
 - **CORS:** Middleware to enable cross-origin requests from the client app.  
 - **Dotenv:** Load environment variables securely from a `.env` file.
 
-
 ---
 
-##  API 
+## API
 
 All responses are returned in **JSON** format. Use the live server URL as the base for all requests.
 
@@ -25,7 +24,7 @@ All responses are returned in **JSON** format. Use the live server URL as the ba
 - `GET /all-products` – Retrieve all pet and product listings.  
 - `GET /all-products/:id` – Retrieve a single listing by its unique `_id`.  
 - `GET /all-products/category/:categoryName` – Retrieve listings filtered by category (e.g., "Pets", "Pet Food").  
-- `GET /api/listings/recent` – Retrieve the 6 most recently added listings for the homepage.  
+- `GET /recent-listings` – Retrieve the 6 most recently added listings for the homepage.  
 - `GET /my-listings/:email` – Retrieve all listings created by a specific user.  
 - `POST /all-products` – Add a new listing (used with AddListing form).  
 - `PUT /all-products/:id` – Update an existing listing (used on "My Listings" page).  
@@ -43,5 +42,5 @@ All responses are returned in **JSON** format. Use the live server URL as the ba
 
 1. **Clone this repository**
 ```bash
-git clone [https://github.com/mdfardous98/pawmart-server.git]
+git clone https://github.com/mdfardous98/pawmart-server.git
 cd pawmart-server
