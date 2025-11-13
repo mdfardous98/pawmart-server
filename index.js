@@ -119,6 +119,17 @@ app.get("/recent-listings", async (req, res) => {
 });
 
 
+ // Search listings by name
+    app.get("/search", async (req, res) => {
+      try {
+        const searchText = req.query.search;
+        const query = { name: { $regex: searchText, $options: "i" } };
+        const result = await listingsCollection.find(query).toArray();
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: "Search failed" });
+      }
+    });
 
 
 
