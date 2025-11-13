@@ -25,10 +25,10 @@ const client = new MongoClient(uri, {
 //  Connection Test
 async function run() {
   try {
-    await client.connect();
+    // await client.connect();
     console.log("Connected to MongoDB!");
 
-    const database = client.db("pawmart_db");
+    const database = client.db("pawmart-user");
     const listingsCollection = database.collection("listings");
     const ordersCollection = database.collection("orders");
 
