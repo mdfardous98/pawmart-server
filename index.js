@@ -62,6 +62,7 @@ app.use(
     origin: [
       "https://pawmart-client-2025.netlify.app",
       "http://localhost:5173",
+      "http://localhost:5174",
       "https://pawmart-server-olive.vercel.app",
     ],
     credentials: true,
@@ -338,6 +339,84 @@ app.get("/listings", async (req, res) => {
       sortOrder = "desc",
     } = req.query;
 
+    if (!db) {
+      // If database is not connected, return demo data
+      const demoListings = [
+        {
+          _id: "demo1",
+          name: "Golden Retriever Puppy",
+          category: "Pets",
+          Price: 800,
+          location: "New York, NY",
+          description:
+            "Beautiful, healthy Golden Retriever puppy. 8 weeks old, vaccinated, and ready for a loving home.",
+          image:
+            "https://images.unsplash.com/photo-1552053831-71594a27632d?w=500&h=400&fit=crop",
+          email: "demo@example.com",
+          addedAt: new Date(),
+          status: "active",
+        },
+        {
+          _id: "demo2",
+          name: "Persian Cat",
+          category: "Pets",
+          Price: 600,
+          location: "Los Angeles, CA",
+          description:
+            "Adorable Persian cat, 1 year old. Very friendly and well-behaved.",
+          image:
+            "https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?w=500&h=400&fit=crop",
+          email: "demo@example.com",
+          addedAt: new Date(),
+          status: "active",
+        },
+        {
+          _id: "demo3",
+          name: "Premium Dog Food",
+          category: "Pet Food",
+          Price: 45,
+          location: "Chicago, IL",
+          description: "High-quality dry dog food suitable for all breeds.",
+          image:
+            "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=500&h=400&fit=crop",
+          email: "demo@example.com",
+          addedAt: new Date(),
+          status: "active",
+        },
+        {
+          _id: "demo4",
+          name: "Cat Scratching Post",
+          category: "Accessories",
+          Price: 35,
+          location: "Miami, FL",
+          description: "Tall scratching post perfect for cats.",
+          image:
+            "https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=500&h=400&fit=crop",
+          email: "demo@example.com",
+          addedAt: new Date(),
+          status: "active",
+        },
+      ];
+
+      // Filter demo data based on category if specified
+      let filteredListings = demoListings;
+      if (category && category !== "all") {
+        filteredListings = demoListings.filter(
+          (listing) => listing.category === category
+        );
+      }
+
+      return res.json({
+        listings: filteredListings,
+        pagination: {
+          currentPage: 1,
+          totalPages: 1,
+          totalItems: filteredListings.length,
+          itemsPerPage: parseInt(limit),
+        },
+      });
+    }
+
     const listingsCollection = db.collection("listings");
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
@@ -390,13 +469,71 @@ app.get("/listings", async (req, res) => {
     });
   } catch (error) {
     logger.error("Listings fetch error:", error);
-    // Return empty data instead of error to prevent client crashes
+    // Return demo data instead of error to prevent client crashes
+    const demoListings = [
+      {
+        _id: "demo1",
+        name: "Golden Retriever Puppy",
+        category: "Pets",
+        Price: 800,
+        location: "New York, NY",
+        description:
+          "Beautiful, healthy Golden Retriever puppy. 8 weeks old, vaccinated, and ready for a loving home.",
+        image:
+          "https://images.unsplash.com/photo-1552053831-71594a27632d?w=500&h=400&fit=crop",
+        email: "demo@example.com",
+        addedAt: new Date(),
+        status: "active",
+      },
+      {
+        _id: "demo2",
+        name: "Persian Cat",
+        category: "Pets",
+        Price: 600,
+        location: "Los Angeles, CA",
+        description:
+          "Adorable Persian cat, 1 year old. Very friendly and well-behaved.",
+        image:
+          "https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?w=500&h=400&fit=crop",
+        email: "demo@example.com",
+        addedAt: new Date(),
+        status: "active",
+      },
+      {
+        _id: "demo3",
+        name: "Premium Dog Food",
+        category: "Pet Food",
+        Price: 45,
+        location: "Chicago, IL",
+        description: "High-quality dry dog food suitable for all breeds.",
+        image:
+          "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=500&h=400&fit=crop",
+        email: "demo@example.com",
+        addedAt: new Date(),
+        status: "active",
+      },
+      {
+        _id: "demo4",
+        name: "Cat Scratching Post",
+        category: "Accessories",
+        Price: 35,
+        location: "Miami, FL",
+        description:
+          "Tall scratching post perfect for cats. Helps keep claws healthy and furniture safe.",
+        image:
+          "https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=500&h=400&fit=crop",
+        email: "demo@example.com",
+        addedAt: new Date(),
+        status: "active",
+      },
+    ];
+
     res.json({
-      listings: [],
+      listings: demoListings,
       pagination: {
         currentPage: 1,
-        totalPages: 0,
-        totalItems: 0,
+        totalPages: 1,
+        totalItems: demoListings.length,
         itemsPerPage: parseInt(limit),
       },
     });
@@ -536,8 +673,51 @@ app.get("/recent-listings", async (req, res) => {
     const { limit = 6 } = req.query;
 
     if (!db) {
-      // If database is not connected, return empty array
-      return res.json([]);
+      // If database is not connected, return demo data
+      const demoListings = [
+        {
+          _id: "demo1",
+          name: "Golden Retriever Puppy",
+          category: "Pets",
+          Price: 800,
+          location: "New York, NY",
+          description:
+            "Beautiful, healthy Golden Retriever puppy. 8 weeks old, vaccinated, and ready for a loving home.",
+          image:
+            "https://images.unsplash.com/photo-1552053831-71594a27632d?w=500&h=400&fit=crop",
+          email: "demo@example.com",
+          addedAt: new Date(),
+          status: "active",
+        },
+        {
+          _id: "demo2",
+          name: "Persian Cat",
+          category: "Pets",
+          Price: 600,
+          location: "Los Angeles, CA",
+          description:
+            "Adorable Persian cat, 1 year old. Very friendly and well-behaved.",
+          image:
+            "https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?w=500&h=400&fit=crop",
+          email: "demo@example.com",
+          addedAt: new Date(),
+          status: "active",
+        },
+        {
+          _id: "demo3",
+          name: "Premium Dog Food",
+          category: "Pet Food",
+          Price: 45,
+          location: "Chicago, IL",
+          description: "High-quality dry dog food suitable for all breeds.",
+          image:
+            "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=500&h=400&fit=crop",
+          email: "demo@example.com",
+          addedAt: new Date(),
+          status: "active",
+        },
+      ];
+      return res.json(demoListings.slice(0, parseInt(limit)));
     }
 
     const listingsCollection = db.collection("listings");
@@ -551,8 +731,23 @@ app.get("/recent-listings", async (req, res) => {
     res.json(listings);
   } catch (error) {
     logger.error("Recent listings fetch error:", error);
-    // Return empty array instead of error to prevent client crashes
-    res.json([]);
+    // Return demo data as fallback
+    const demoListings = [
+      {
+        _id: "demo1",
+        name: "Golden Retriever Puppy",
+        category: "Pets",
+        Price: 800,
+        location: "New York, NY",
+        description: "Beautiful, healthy Golden Retriever puppy.",
+        image:
+          "https://images.unsplash.com/photo-1552053831-71594a27632d?w=500&h=400&fit=crop",
+        email: "demo@example.com",
+        addedAt: new Date(),
+        status: "active",
+      },
+    ];
+    res.json(demoListings);
   }
 });
 
@@ -672,6 +867,7 @@ app.post("/orders", verifyToken, validate(orderSchema), async (req, res) => {
     const orderData = {
       ...req.body,
       buyerId: req.user.userId,
+      buyerEmail: req.user.email,
       status: "pending",
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -707,7 +903,9 @@ app.get("/orders/:email", verifyToken, async (req, res) => {
 
     const ordersCollection = db.collection("orders");
     const orders = await ordersCollection
-      .find({ email: userEmail })
+      .find({
+        $or: [{ email: userEmail }, { buyerEmail: userEmail }],
+      })
       .sort({ createdAt: -1 })
       .toArray();
 
