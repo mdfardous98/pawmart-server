@@ -44,3 +44,6 @@ All responses are returned in **JSON** format. Use the live server URL as the ba
 ```bash
 git clone https://github.com/mdfardous98/pawmart-server.git
 cd pawmart-server
+
+
+https://github.com/mdfardous98/digital-life-lessons-server.git
